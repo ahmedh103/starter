@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+// use Illuminate\Support\Facades\LaravelLocalization;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,13 +18,43 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/redirect/{service}','SocialController@redirect');
+Route::get('/callback/{service}','SocialController@callback');
 
 // Route::get('/land', function () {
 //     return view('welcome');
 // });
 
+Route::group(['prefix' => LaravelLocalization::setLocale(),	'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+
+],function(){
+
+    Route::get('fillable','CrudController@getOffers');
+    Route::group(['prefix'=>'offers'],function(){
+   
+   // Route::get('store','CrudController@store');
+   
+   
+ 
+   Route::get('all','CrudController@getAllOffers');
+   Route::get('create','CrudController@create');
+   Route::post('store','CrudController@store')->name('offers.store');
 
 
+
+   Route::get('edit/{offer_id}','CrudController@editOffer');
+   //Route::post('update/{offer_id}','CrudController@UpdateOffer')->name('offers.update');
+   Route::post('update/{offer_id}', 'CrudController@updateOffer')->name('offers.update');
+   
+    });
+
+
+
+    Route::get('youtube','YoutubeController@getVideo')->middleware('verified');
+
+
+});
+ 
 
 
 
